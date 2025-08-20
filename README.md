@@ -1,22 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PlatWare UI Documentation</title>
-<style>
-  body { font-family: Arial, sans-serif; background: #1e1e1e; color: #ddd; margin: 0; padding: 0; }
-  header { background: #2a2a2a; padding: 20px; text-align: center; font-size: 28px; }
-  main { padding: 20px; max-width: 1000px; margin: auto; }
-  h2 { color: #80c0ff; margin-top: 40px; }
-  pre { background: #2a2a2a; padding: 10px; border-radius: 5px; overflow-x: auto; }
-  code { color: #80ff80; }
-  section { margin-bottom: 40px; }
-  a { color: #80c0ff; text-decoration: none; }
-  a:hover { text-decoration: underline; }
-</style>
-</head>
-<body>
 
 <header>Optical UI Lib Documentation</header>
 
