@@ -396,7 +396,6 @@ end
 <h2>Ending Lib</h2>
 <p>Put this at the end of your script when youre done coding</p>
 <pre><code>return UI</code></pre>
-<p>This is REQUIRED for the code to work</p>
 </section>
 
 </main>
