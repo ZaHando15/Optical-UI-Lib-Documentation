@@ -18,7 +18,7 @@
 </head>
 <body>
 
-<header>PlatWare UI Library Documentation</header>
+<header>Optical UI Lib Documentation</header>
 
 <main>
 <section>
@@ -30,7 +30,7 @@ local player = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "PlatWareUI"
+screenGui.Name = "Optical"-- your screenGui's name
 screenGui.Parent = player:WaitForChild("PlayerGui")
 screenGui.ResetOnSpawn = false
 
@@ -54,7 +54,7 @@ local title = Instance.new("TextLabel", topPanel)
 title.Size = UDim2.new(1, -80, 1, 0)
 title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "PlatWare V1"
+title.Text = "Optical"-- your script's title
 title.TextColor3 = Color3.fromRGB(200, 200, 200)
 title.TextSize = 18
 title.Font = Enum.Font.GothamBold
@@ -295,14 +295,12 @@ end
 <h2>Creating Categories</h2>
 <p>Use <code>UI:MakeCat()</code> to create sidebar categories:</p>
 <pre><code>local Cat = UI:MakeCat({ Name = "Characters" })</code></pre>
-<p>This creates a button in the sidebar and an empty frame for content.</p>
 </section>
 
 <section>
 <h2>Adding Labels</h2>
 <p>Add simple text labels inside a category:</p>
 <pre><code>Cat:AddLabel("Player Options")</code></pre>
-<p>Labels are non-interactive text elements.</p>
 </section>
 
 <section>
@@ -314,7 +312,6 @@ end
         print("Button clicked!")
     end
 })</code></pre>
-<p>The <code>Callback</code> is executed when the button is clicked.</p>
 </section>
 
 <section>
@@ -341,7 +338,6 @@ end
         print("Slider value:", value)
     end
 })</code></pre>
-<p>The callback is called continuously while dragging the slider.</p>
 </section>
 
 <section>
@@ -357,43 +353,10 @@ end
 })</code></pre>
 </section>
 
-<section>
-<h2>Complete Example</h2>
-<pre><code>local Cat = UI:MakeCat({ Name = "Category" })
-
-Cat:AddLabel("Player Options")
-
-Cat:AddButton({
-    Name = "Reset Character",
-    Callback = function()
-        print("Reset Character pressed!")
-    end
-})
-
-Cat:AddToggle({
-    Name = "Enable Fly",
-    Default = false,
-    Callback = function(state)
-        print("Fly is", state and "ON" or "OFF")
-    end
-})
-
-Cat:AddSlider({
-    Name = "Speed",
-    Default = 50,
-    Max = 100,
-    Callback = function(value)
-        print("Speed:", value)
-    end
-})</code></pre>
-<p>This sets up a category with a label, button, toggle, and slider.</p>
-</section>
-
 <<section>
 <h2>Ending Lib</h2>
 <p>Put this at the end of your script when youre done coding</p>
-<pre><code>return UI
-})</code></pre>
+<pre><code>return UI</code></pre>
 <p>This is REQUIRED for the code to work</p>
 </section>
 
