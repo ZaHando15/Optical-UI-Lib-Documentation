@@ -324,7 +324,6 @@ function cat:AddDropdown(opts)
 		dropdownList:TweenSize(UDim2.new(1,0,0,goalHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
 	end)
 end
-
 	table.insert(UI.Categories, cat)
 	return cat
 end
@@ -334,7 +333,7 @@ end
 <section>
 <h2>Creating Categories</h2>
 <p>Use <code>UI:MakeCat()</code> to create sidebar categories:</p>
-<pre><code>local Cat = UI:MakeCat({ Name = "Characters" })</code></pre>
+<pre><code>local Cat = UI:MakeCat({ Name = "Category" })</code></pre>
 </section>
 
 <section>
