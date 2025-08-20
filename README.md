@@ -11,7 +11,7 @@ local UIS = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "Optical"
+screenGui.Name = "Optical"-- ScreenGui Name
 screenGui.Parent = player:WaitForChild("PlayerGui")
 screenGui.ResetOnSpawn = false
 
@@ -35,7 +35,7 @@ local title = Instance.new("TextLabel", topPanel)
 title.Size = UDim2.new(1, -80, 1, 0)
 title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "Optical"
+title.Text = "Optical" -- Name of your script
 title.TextColor3 = Color3.fromRGB(200, 200, 200)
 title.TextSize = 18
 title.Font = Enum.Font.GothamBold
