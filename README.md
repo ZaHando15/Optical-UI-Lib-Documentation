@@ -1,5 +1,5 @@
 
-<header>Optical UI Lib Documentation</header>
+<h2>Optical UI Lib Documentation</h2>
 
 <main>
 <section>
