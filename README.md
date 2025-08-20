@@ -7,11 +7,11 @@
 <p>Include this code in a LocalScript to initialize the PlatWare UI:</p>
 <pre><code>local TweenService = game:GetService("TweenService")
 local Players = game:GetService("Players")
-local player = Players.LocalPlayer
 local UIS = game:GetService("UserInputService")
+local player = Players.LocalPlayer
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "Optical"-- your screenGui's name
+screenGui.Name = "Optical"
 screenGui.Parent = player:WaitForChild("PlayerGui")
 screenGui.ResetOnSpawn = false
 
@@ -35,7 +35,7 @@ local title = Instance.new("TextLabel", topPanel)
 title.Size = UDim2.new(1, -80, 1, 0)
 title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "Optical"-- your script's title
+title.Text = "Optical"
 title.TextColor3 = Color3.fromRGB(200, 200, 200)
 title.TextSize = 18
 title.Font = Enum.Font.GothamBold
@@ -149,14 +149,18 @@ function UI:MakeCat(opts)
 	local cat = {}
 	local name = opts.Name or "Category"
 
-	cat.Frame = Instance.new("Frame", categoryContentParent)
-	cat.Frame.Size = UDim2.new(1, 0, 0, 0)
+	cat.Frame = Instance.new("ScrollingFrame", categoryContentParent)
+	cat.Frame.Size = UDim2.new(1, 0, 1, 0)
 	cat.Frame.BackgroundTransparency = 1
 	cat.Frame.Visible = false
 	local catLayout = Instance.new("UIListLayout", cat.Frame)
 	catLayout.FillDirection = Enum.FillDirection.Vertical
 	catLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	catLayout.Padding = UDim.new(0,5)
+	
+	catLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+	cat.Frame.CanvasSize = UDim2.new(0,0,0, catLayout.AbsoluteContentSize.Y)
+end)
 
 	cat.Button = Instance.new("TextButton", sidebar)
 	cat.Button.Size = UDim2.new(1, 0, 0, 35)
@@ -265,6 +269,61 @@ function UI:MakeCat(opts)
 			end
 		end)
 	end
+
+function cat:AddDropdown(opts)
+	local dropdownBtn = Instance.new("TextButton", cat.Frame)
+	dropdownBtn.Size = UDim2.new(1,0,0,30)
+	dropdownBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+	dropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
+	dropdownBtn.Font = Enum.Font.Gotham
+	dropdownBtn.TextSize = 16
+	dropdownBtn.Text = opts.Name.." : "..(opts.Default or "")
+	Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(0,6)
+
+	local dropdownOpen = false
+	local dropdownList = Instance.new("ScrollingFrame", cat.Frame)
+	dropdownList.Size = UDim2.new(1,0,0,0) -- initial closed
+	dropdownList.Position = UDim2.new(0,0,0,30)
+	dropdownList.BackgroundColor3 = Color3.fromRGB(50,50,50)
+	dropdownList.ClipsDescendants = true
+	dropdownList.ScrollBarThickness = 8
+	dropdownList.CanvasSize = UDim2.new(0,0,0,0)
+	Instance.new("UICorner", dropdownList).CornerRadius = UDim.new(0,6)
+
+	local listLayout = Instance.new("UIListLayout", dropdownList)
+	listLayout.FillDirection = Enum.FillDirection.Vertical
+	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	listLayout.Padding = UDim.new(0,2)
+
+	-- update canvas size for scrolling
+	listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+		dropdownList.CanvasSize = UDim2.new(0,0,0,listLayout.AbsoluteContentSize.Y)
+	end)
+
+	for i, option in pairs(opts.Options or {}) do
+		local optionBtn = Instance.new("TextButton", dropdownList)
+		optionBtn.Size = UDim2.new(1,0,0,30)
+		optionBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+		optionBtn.TextColor3 = Color3.fromRGB(255,255,255)
+		optionBtn.Font = Enum.Font.Gotham
+		optionBtn.TextSize = 14
+		optionBtn.Text = option
+		Instance.new("UICorner", optionBtn).CornerRadius = UDim.new(0,4)
+
+		optionBtn.MouseButton1Click:Connect(function()
+			dropdownBtn.Text = opts.Name.." : "..option
+			dropdownOpen = false
+			dropdownList:TweenSize(UDim2.new(1,0,0,0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+			if opts.Callback then opts.Callback(option) end
+		end)
+	end
+
+	dropdownBtn.MouseButton1Click:Connect(function()
+		dropdownOpen = not dropdownOpen
+		local goalHeight = dropdownOpen and math.min(#(opts.Options or {})*30, 150) or 0
+		dropdownList:TweenSize(UDim2.new(1,0,0,goalHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+	end)
+end
 
 	table.insert(UI.Categories, cat)
 	return cat
