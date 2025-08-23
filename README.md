@@ -11,7 +11,7 @@ local UIS = game:GetService("UserInputService")
 local player = Players.LocalPlayer
 
 local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "Optical"-- ScreenGui Name
+screenGui.Name = "Optical" -- Screengui name
 screenGui.Parent = player:WaitForChild("PlayerGui")
 screenGui.ResetOnSpawn = false
 
@@ -35,7 +35,7 @@ local title = Instance.new("TextLabel", topPanel)
 title.Size = UDim2.new(1, -80, 1, 0)
 title.Position = UDim2.new(0, 10, 0, 0)
 title.BackgroundTransparency = 1
-title.Text = "Optical" -- Name of your script
+title.Text = "Optical" -- title of gui
 title.TextColor3 = Color3.fromRGB(200, 200, 200)
 title.TextSize = 18
 title.Font = Enum.Font.GothamBold
@@ -277,12 +277,12 @@ function cat:AddDropdown(opts)
 	dropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
 	dropdownBtn.Font = Enum.Font.Gotham
 	dropdownBtn.TextSize = 16
-	dropdownBtn.Text = opts.Name.." : "..(opts.Default or "")
+	dropdownBtn.Text = opts.Name.." : "..(opts.Default and table.concat(opts.Default,", ") or "")
 	Instance.new("UICorner", dropdownBtn).CornerRadius = UDim.new(0,6)
 
 	local dropdownOpen = false
 	local dropdownList = Instance.new("ScrollingFrame", cat.Frame)
-	dropdownList.Size = UDim2.new(1,0,0,0) -- initial closed
+	dropdownList.Size = UDim2.new(1,0,0,0)
 	dropdownList.Position = UDim2.new(0,0,0,30)
 	dropdownList.BackgroundColor3 = Color3.fromRGB(50,50,50)
 	dropdownList.ClipsDescendants = true
@@ -295,10 +295,25 @@ function cat:AddDropdown(opts)
 	listLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	listLayout.Padding = UDim.new(0,2)
 
-	-- update canvas size for scrolling
 	listLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 		dropdownList.CanvasSize = UDim2.new(0,0,0,listLayout.AbsoluteContentSize.Y)
 	end)
+
+	local selected = {}
+	if opts.Default then
+		for _, def in pairs(opts.Default) do
+			selected[def] = true
+		end
+	end
+
+	local function updateText()
+		local chosen = {}
+		for option,val in pairs(selected) do
+			if val then table.insert(chosen, option) end
+		end
+		dropdownBtn.Text = opts.Name.." : "..table.concat(chosen, ", ")
+		if opts.Callback then opts.Callback(chosen) end
+	end
 
 	for i, option in pairs(opts.Options or {}) do
 		local optionBtn = Instance.new("TextButton", dropdownList)
@@ -310,11 +325,23 @@ function cat:AddDropdown(opts)
 		optionBtn.Text = option
 		Instance.new("UICorner", optionBtn).CornerRadius = UDim.new(0,4)
 
+		local function refresh()
+			optionBtn.BackgroundColor3 = selected[option] and Color3.fromRGB(90,140,90) or Color3.fromRGB(60,60,60)
+		end
+		refresh()
+
 		optionBtn.MouseButton1Click:Connect(function()
-			dropdownBtn.Text = opts.Name.." : "..option
-			dropdownOpen = false
-			dropdownList:TweenSize(UDim2.new(1,0,0,0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
-			if opts.Callback then opts.Callback(option) end
+			if selected[option] then
+				local count = 0
+				for _,v in pairs(selected) do if v then count += 1 end end
+				if count > 1 then
+					selected[option] = false
+				end
+			else
+				selected[option] = true
+			end
+			refresh()
+			updateText()
 		end)
 	end
 
@@ -323,7 +350,10 @@ function cat:AddDropdown(opts)
 		local goalHeight = dropdownOpen and math.min(#(opts.Options or {})*30, 150) or 0
 		dropdownList:TweenSize(UDim2.new(1,0,0,goalHeight), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
 	end)
+
+	updateText()
 end
+
 	table.insert(UI.Categories, cat)
 	return cat
 end
