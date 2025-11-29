@@ -531,6 +531,10 @@ end
     end)
 end
 
+    function UI:SetTitle(newText)
+        title.Text = newText or "Optical"
+    end
+
         function cat:AddDropdown(opts)
             local dropdownBtn = Instance.new("TextButton", cat.Frame)
             dropdownBtn.Size = UDim2.new(1,0,0,30)
@@ -635,11 +639,6 @@ end
             end
         end
     end)
-
-    function UI:SetTitle(newText)
-        title.Text = newText or "Optical"
-    end
-
     return UI
 end
 
