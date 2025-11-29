@@ -273,10 +273,10 @@ local function CreateOpticalUI()
             end)
         end
 
+        -- SET WINDOW TITLE
 function UI:SetTitle(newText)
-    title.Text = newText or "Optical"
+    title.Text = newText or "Optica"
 end
-
         ------------------------------------------------------------------
         --  FIXED KEYBIND CHECKBOX (decal + left-side)
         ------------------------------------------------------------------
