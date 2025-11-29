@@ -5,11 +5,6 @@ local function CreateOpticalUI()
     local UIS = game:GetService("UserInputService")
     local player = Players.LocalPlayer
     
-    -- Prevent duplicates
-    if player.PlayerGui:FindFirstChild("Optical") then
-        player.PlayerGui.Optical:Destroy()
-    end
-    
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "Optical"
     screenGui.Parent = player:WaitForChild("PlayerGui")
@@ -531,9 +526,10 @@ end
     end)
 end
 
-    function UI:SetTitle(newText)
-        title.Text = newText or "Optical"
-    end
+function UI:SetTitle(newText)
+    title.Text = newText or "Optical"
+    screenGui.Name = newText or "Optical"   -- also rename ScreenGui
+end
 
         function cat:AddDropdown(opts)
             local dropdownBtn = Instance.new("TextButton", cat.Frame)
