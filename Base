@@ -179,6 +179,10 @@ local function CreateOpticalUI()
             cat.Frame.Visible = true
             cat.Button.BackgroundColor3 = Color3.fromRGB(100,100,100)
         end)
+function UI:SetTitle(newText)
+    title.Text = newText or "Optical"
+    screenGui.Name = newText or "Optical"   -- also rename ScreenGui
+end
 
         function cat:AddLabel(text)
             local lbl = Instance.new("TextLabel", cat.Frame)
@@ -524,11 +528,6 @@ end
             end
         end
     end)
-end
-
-function UI:SetTitle(newText)
-    title.Text = newText or "Optical"
-    screenGui.Name = newText or "Optical"   -- also rename ScreenGui
 end
 
         function cat:AddDropdown(opts)
