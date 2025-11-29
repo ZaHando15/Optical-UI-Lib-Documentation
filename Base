@@ -278,20 +278,19 @@ local function CreateOpticalUI()
         ------------------------------------------------------------------
         function cat:AddKeybind(opts)
     local listening = false
-    local boundKey = nil
-    local holder = Instance.new("Frame",cat.Frame)
-    holder.Size = UDim2.new(1,0,0,30)
+    local boundKey  = nil
+    local holder    = Instance.new("Frame",cat.Frame)
+    holder.Size     = UDim2.new(1,0,0,30)
     holder.BackgroundColor3 = Color3.fromRGB(60,60,60)
     Instance.new("UICorner",holder).CornerRadius = UDim.new(0,6)
 
-    -- invisible click-catcher
     local clicker = Instance.new("TextButton",holder)
     clicker.Size = UDim2.new(1,0,1,0)
     clicker.BackgroundTransparency = 1
     clicker.Text = ""
     clicker.ZIndex = 2
 
-    -- left-side box (decal)
+    -- left decal box
     local box = Instance.new("ImageLabel",holder)
     box.Size = UDim2.new(0,20,0,20)
     box.Position = UDim2.new(0,8,0.5,-10)
@@ -326,7 +325,7 @@ local function CreateOpticalUI()
             keyTxt.Text = "..."
         elseif boundKey then
             box.Image = "rbxassetid://6031068421"
-            keyTxt.Text = string.sub(tostring(boundKey.Name),1,4)
+            keyTxt.Text = boundKey.Name  --  real key name
         else
             box.Image = "rbxassetid://6031068420"
             keyTxt.Text = "?"
@@ -346,8 +345,7 @@ local function CreateOpticalUI()
             boundKey = input.KeyCode
             listening = false
             refresh()
-            -- store ONLY the key-code → callback pair
-            table.insert(UI.Keybinds, {Key = boundKey, Callback = opts.Callback, Name = opts.Name})
+            table.insert(UI.Keybinds,{Key = boundKey, Callback = opts.Callback, Name = opts.Name})
         end
     end)
 end
