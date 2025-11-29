@@ -1,4 +1,4 @@
--- Optical UI Library
+-- Optical UI Library (Enhanced)
 local function CreateOpticalUI()
     local TweenService = game:GetService("TweenService")
     local Players = game:GetService("Players")
@@ -146,6 +146,7 @@ local function CreateOpticalUI()
 
     local UI = {}
     UI.Categories = {}
+    UI.Keybinds = {} -- Store active keybinds
 
     function UI:MakeCat(opts)
         local cat = {}
@@ -155,6 +156,8 @@ local function CreateOpticalUI()
         cat.Frame.Size = UDim2.new(1, 0, 1, 0)
         cat.Frame.BackgroundTransparency = 1
         cat.Frame.Visible = false
+        cat.Frame.ScrollBarThickness = 4
+        cat.Frame.CanvasSize = UDim2.new(0,0,0,0)
         local catLayout = Instance.new("UIListLayout", cat.Frame)
         catLayout.FillDirection = Enum.FillDirection.Vertical
         catLayout.SortOrder = Enum.SortOrder.LayoutOrder
@@ -206,20 +209,133 @@ local function CreateOpticalUI()
             end)
         end
 
+        -- NEW: Checkbox-style toggle
         function cat:AddToggle(opts)
-            local toggleBtn = Instance.new("TextButton", cat.Frame)
-            toggleBtn.Size = UDim2.new(1,0,0,30)
-            toggleBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
-            toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
-            toggleBtn.Font = Enum.Font.Gotham
-            toggleBtn.TextSize = 16
+            local toggleFrame = Instance.new("Frame", cat.Frame)
+            toggleFrame.Size = UDim2.new(1,0,0,30)
+            toggleFrame.BackgroundColor3 = Color3.fromRGB(60,60,60)
+            Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0,6)
+            
+            local listLayout = Instance.new("UIListLayout", toggleFrame)
+            listLayout.FillDirection = Enum.FillDirection.Horizontal
+            listLayout.Padding = UDim.new(0, 10)
+            listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+            
+            local checkbox = Instance.new("Frame")
+            checkbox.Size = UDim2.new(0, 20, 0, 20)
+            checkbox.BackgroundColor3 = Color3.fromRGB(40,40,40)
+            checkbox.BorderSizePixel = 1
+            checkbox.BorderColor3 = Color3.fromRGB(100,100,100)
+            checkbox.Parent = toggleFrame
+            Instance.new("UICorner", checkbox).CornerRadius = UDim.new(0, 4)
+            
+            local checkmark = Instance.new("TextLabel", checkbox)
+            checkmark.Size = UDim2.new(1,0,1,0)
+            checkmark.BackgroundTransparency = 1
+            checkmark.Text = "✓"
+            checkmark.TextSize = 16
+            checkmark.Font = Enum.Font.GothamBold
+            checkmark.TextColor3 = Color3.fromRGB(255,255,255)
+            checkmark.Visible = false
+            
+            local label = Instance.new("TextLabel", toggleFrame)
+            label.Size = UDim2.new(1,-30,1,0)
+            label.BackgroundTransparency = 1
+            label.Text = opts.Name or "Toggle"
+            label.TextColor3 = Color3.fromRGB(255,255,255)
+            label.Font = Enum.Font.Gotham
+            label.TextSize = 16
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            
             local state = opts.Default or false
-            toggleBtn.Text = opts.Name.." ["..(state and "ON" or "OFF").."]"
-            Instance.new("UICorner", toggleBtn).CornerRadius = UDim.new(0,6)
-            toggleBtn.MouseButton1Click:Connect(function()
+            if state then
+                checkbox.BackgroundColor3 = Color3.fromRGB(90,140,90)
+                checkmark.Visible = true
+            end
+            
+            toggleFrame.MouseButton1Click:Connect(function()
                 state = not state
-                toggleBtn.Text = opts.Name.." ["..(state and "ON" or "OFF").."]"
+                if state then
+                    checkbox.BackgroundColor3 = Color3.fromRGB(90,140,90)
+                    checkmark.Visible = true
+                else
+                    checkbox.BackgroundColor3 = Color3.fromRGB(40,40,40)
+                    checkmark.Visible = false
+                end
                 if opts.Callback then opts.Callback(state) end
+            end)
+        end
+
+        -- NEW: Keybind checkbox
+        function cat:AddKeybind(opts)
+            local keybindFrame = Instance.new("Frame", cat.Frame)
+            keybindFrame.Size = UDim2.new(1,0,0,30)
+            keybindFrame.BackgroundColor3 = Color3.fromRGB(60,60,60)
+            Instance.new("UICorner", keybindFrame).CornerRadius = UDim.new(0,6)
+            
+            local listLayout = Instance.new("UIListLayout", keybindFrame)
+            listLayout.FillDirection = Enum.FillDirection.Horizontal
+            listLayout.Padding = UDim.new(0, 10)
+            listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+            
+            local checkbox = Instance.new("Frame")
+            checkbox.Size = UDim2.new(0, 20, 0, 20)
+            checkbox.BackgroundColor3 = Color3.fromRGB(40,40,40)
+            checkbox.BorderSizePixel = 1
+            checkbox.BorderColor3 = Color3.fromRGB(100,100,100)
+            checkbox.Parent = keybindFrame
+            Instance.new("UICorner", checkbox).CornerRadius = UDim.new(0, 4)
+            
+            local keyLabel = Instance.new("TextLabel", checkbox)
+            keyLabel.Size = UDim2.new(1,0,1,0)
+            keyLabel.BackgroundTransparency = 1
+            keyLabel.Text = "..."
+            keyLabel.TextSize = 12
+            keyLabel.Font = Enum.Font.GothamBold
+            keyLabel.TextColor3 = Color3.fromRGB(255,255,255)
+            
+            local label = Instance.new("TextLabel", keybindFrame)
+            label.Size = UDim2.new(1,-30,1,0)
+            label.BackgroundTransparency = 1
+            label.Text = opts.Name or "Keybind"
+            label.TextColor3 = Color3.fromRGB(255,255,255)
+            label.Font = Enum.Font.Gotham
+            label.TextSize = 16
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            
+            local listening = false
+            local currentKey = nil
+            
+            -- Create a TextButton for the whole frame to be clickable
+            local clickButton = Instance.new("TextButton", keybindFrame)
+            clickButton.Size = UDim2.new(1,0,1,0)
+            clickButton.BackgroundTransparency = 1
+            clickButton.Text = ""
+            
+            clickButton.MouseButton1Click:Connect(function()
+                listening = true
+                keyLabel.Text = "..."
+                checkbox.BackgroundColor3 = Color3.fromRGB(90,90,140)
+            end)
+            
+            -- Key listening
+            UIS.InputBegan:Connect(function(input, gameProcessed)
+                if not listening then return end
+                if gameProcessed then return end
+                
+                if input.UserInputType == Enum.UserInputType.Keyboard then
+                    currentKey = input.KeyCode
+                    keyLabel.Text = input.KeyCode.Name:sub(1, 4)
+                    listening = false
+                    checkbox.BackgroundColor3 = Color3.fromRGB(90,140,90)
+                    
+                    -- Store keybind
+                    table.insert(UI.Keybinds, {
+                        Key = currentKey,
+                        Callback = opts.Callback,
+                        Name = opts.Name
+                    })
+                end
             end)
         end
 
@@ -269,6 +385,97 @@ local function CreateOpticalUI()
                     barFill.Size = UDim2.new(relativePos / barBackground.AbsoluteSize.X, 0, 1, 0)
                     label.Text = opts.Name.." ["..value.."]"
                     if opts.Callback then opts.Callback(value) end
+                end
+            end)
+        end
+
+        -- NEW: Color Picker
+        function cat:AddColorPicker(opts)
+            local colorFrame = Instance.new("Frame", cat.Frame)
+            colorFrame.Size = UDim2.new(1,0,0,30)
+            colorFrame.BackgroundColor3 = Color3.fromRGB(60,60,60)
+            Instance.new("UICorner", colorFrame).CornerRadius = UDim.new(0,6)
+            
+            local listLayout = Instance.new("UIListLayout", colorFrame)
+            listLayout.FillDirection = Enum.FillDirection.Horizontal
+            listLayout.Padding = UDim.new(0, 10)
+            listLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+            
+            local colorPreview = Instance.new("Frame")
+            colorPreview.Size = UDim2.new(0, 20, 0, 20)
+            colorPreview.BackgroundColor3 = opts.Default or Color3.fromRGB(255,255,255)
+            colorPreview.BorderSizePixel = 1
+            colorPreview.BorderColor3 = Color3.fromRGB(100,100,100)
+            colorPreview.Parent = colorFrame
+            Instance.new("UICorner", colorPreview).CornerRadius = UDim.new(0, 4)
+            
+            local label = Instance.new("TextLabel", colorFrame)
+            label.Size = UDim2.new(1,-30,1,0)
+            label.BackgroundTransparency = 1
+            label.Text = opts.Name or "Color"
+            label.TextColor3 = Color3.fromRGB(255,255,255)
+            label.Font = Enum.Font.Gotham
+            label.TextSize = 16
+            label.TextXAlignment = Enum.TextXAlignment.Left
+            
+            -- Color picker popup
+            local pickerPopup = Instance.new("Frame", screenGui)
+            pickerPopup.Size = UDim2.new(0, 200, 0, 150)
+            pickerPopup.Position = UDim2.new(0, 0, 0, 0)
+            pickerPopup.BackgroundColor3 = Color3.fromRGB(50,50,50)
+            pickerPopup.BorderSizePixel = 1
+            pickerPopup.BorderColor3 = Color3.fromRGB(80,80,80)
+            pickerPopup.Visible = false
+            pickerPopup.ZIndex = 10
+            Instance.new("UICorner", pickerPopup).CornerRadius = UDim.new(0, 6)
+            
+            local gridLayout = Instance.new("UIGridLayout", pickerPopup)
+            gridLayout.CellPadding = UDim2.new(0,5,0,5)
+            gridLayout.CellSize = UDim2.new(0,30,0,30)
+            gridLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+            gridLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+            
+            -- Preset colors
+            local colors = {
+                Color3.fromRGB(255,0,0), Color3.fromRGB(0,255,0), Color3.fromRGB(0,0,255),
+                Color3.fromRGB(255,255,0), Color3.fromRGB(255,0,255), Color3.fromRGB(0,255,255),
+                Color3.fromRGB(255,255,255), Color3.fromRGB(0,0,0), Color3.fromRGB(255,128,0),
+                Color3.fromRGB(128,0,255), Color3.fromRGB(0,255,128), Color3.fromRGB(128,128,128)
+            }
+            
+            for _, color in pairs(colors) do
+                local colorBtn = Instance.new("TextButton", pickerPopup)
+                colorBtn.BackgroundColor3 = color
+                colorBtn.Text = ""
+                colorBtn.MouseButton1Click:Connect(function()
+                    colorPreview.BackgroundColor3 = color
+                    pickerPopup.Visible = false
+                    if opts.Callback then opts.Callback(color) end
+                end)
+                Instance.new("UICorner", colorBtn).CornerRadius = UDim.new(0, 4)
+            end
+            
+            local clickButton = Instance.new("TextButton", colorFrame)
+            clickButton.Size = UDim2.new(1,0,1,0)
+            clickButton.BackgroundTransparency = 1
+            clickButton.Text = ""
+            
+            clickButton.MouseButton1Click:Connect(function()
+                pickerPopup.Position = UDim2.new(0, colorPreview.AbsolutePosition.X + 30, 0, colorPreview.AbsolutePosition.Y)
+                pickerPopup.Visible = not pickerPopup.Visible
+            end)
+            
+            -- Close popup when clicking outside
+            UIS.InputBegan:Connect(function(input, gameProcessed)
+                if pickerPopup.Visible and input.UserInputType == Enum.UserInputType.MouseButton1 then
+                    local mousePos = UIS:GetMouseLocation()
+                    local px, py = pickerPopup.AbsolutePosition.X, pickerPopup.AbsolutePosition.Y
+                    local psx, psy = pickerPopup.AbsoluteSize.X, pickerPopup.AbsoluteSize.Y
+                    
+                    if not (mousePos.X >= px and mousePos.X <= px + psx and
+                            mousePos.Y >= py and mousePos.Y <= py + psy) then
+                        pickerPopup.Visible = false
+                    end
                 end
             end)
         end
@@ -358,8 +565,25 @@ local function CreateOpticalUI()
         end
 
         table.insert(UI.Categories, cat)
+        
+        -- Set first category as visible by default
+        if #UI.Categories == 1 then
+            cat.Frame.Visible = true
+            cat.Button.BackgroundColor3 = Color3.fromRGB(100,100,100)
+        end
+        
         return cat
     end
+
+    -- Handle keybinds globally
+    UIS.InputBegan:Connect(function(input, gameProcessed)
+        if gameProcessed then return end
+        for _, keybind in pairs(UI.Keybinds) do
+            if input.UserInputType == Enum.UserInputType.Keyboard and input.KeyCode == keybind.Key then
+                if keybind.Callback then keybind.Callback() end
+            end
+        end
+    end)
 
     return UI
 end
