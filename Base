@@ -156,7 +156,7 @@ local function CreateOpticalUI()
 
         -- sidebar button
         cat.Button = Instance.new("TextButton", sidebar)
-        cat.Button.Size = UDim2.new(1, 0, 0, 36)
+        cat.Button.Size = UDim2.new(1, 0, 0, 36)   -- restore explicit size
         cat.Button.BackgroundColor3 = Color3.fromRGB(45, 49, 55)
         cat.Button.Text = name
         cat.Button.TextColor3 = Color3.fromRGB(220, 220, 220)
@@ -172,6 +172,11 @@ local function CreateOpticalUI()
             cat.Frame.Visible = true
             cat.Button.BackgroundColor3 = Color3.fromRGB(65, 135, 245)
         end)
+-- after  local sideLayout = Instance.new("UIListLayout", sidebar)  :
+sideLayout.SortOrder = Enum.SortOrder.LayoutOrder
+sideLayout.Padding = UDim.new(0, 6)
+sideLayout.FillDirection = Enum.FillDirection.Vertical
+sideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center   -- ADD THIS
 
         ------------------------------------------------------------------------ controls
         function cat:AddLabel(text)
