@@ -273,6 +273,10 @@ local function CreateOpticalUI()
             end)
         end
 
+function UI:SetTitle(newText)
+    title.Text = newText or "Optical"
+end
+
         ------------------------------------------------------------------
         --  FIXED KEYBIND CHECKBOX (decal + left-side)
         ------------------------------------------------------------------
