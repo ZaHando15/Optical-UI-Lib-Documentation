@@ -5,6 +5,11 @@ local function CreateOpticalUI()
     local UIS = game:GetService("UserInputService")
     local player = Players.LocalPlayer
     
+    -- Prevent duplicates
+    if player.PlayerGui:FindFirstChild("Optical") then
+        player.PlayerGui.Optical:Destroy()
+    end
+    
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "Optical"
     screenGui.Parent = player:WaitForChild("PlayerGui")
@@ -143,6 +148,7 @@ local function CreateOpticalUI()
     UI.Categories = {}
     UI.Keybinds = {} -- Store active keybinds
 
+    -- TITLE CHANGER
     function UI:SetTitle(newText)
         title.Text = newText or "Optical"
         screenGui.Name = newText or "Optical"
@@ -272,6 +278,7 @@ local function CreateOpticalUI()
                 if opts.Callback then opts.Callback(state) end
             end)
         end
+
         ------------------------------------------------------------------
         --  FIXED KEYBIND CHECKBOX (decal + left-side)
         ------------------------------------------------------------------
@@ -348,56 +355,6 @@ local function CreateOpticalUI()
         end
     end)
 end
-
-        function cat:AddSlider(opts)
-            local sliderFrame = Instance.new("Frame", cat.Frame)
-            sliderFrame.Size = UDim2.new(1,0,0,40)
-            sliderFrame.BackgroundTransparency = 1
-
-            local label = Instance.new("TextLabel", sliderFrame)
-            label.Size = UDim2.new(1,0,0,15)
-            label.BackgroundTransparency = 1
-            label.Text = opts.Name.." ["..(opts.Default or 0).."]"
-            label.TextColor3 = Color3.fromRGB(200,200,200)
-            label.Font = Enum.Font.Gotham
-            label.TextSize = 14
-            label.TextXAlignment = Enum.TextXAlignment.Left
-
-            local barBackground = Instance.new("Frame", sliderFrame)
-            barBackground.Size = UDim2.new(1,0,0,15)
-            barBackground.Position = UDim2.new(0,0,0,20)
-            barBackground.BackgroundColor3 = Color3.fromRGB(60,60,60)
-            Instance.new("UICorner", barBackground).CornerRadius = UDim.new(0,6)
-
-            local barFill = Instance.new("Frame", barBackground)
-            barFill.Size = UDim2.new((opts.Default or 0)/ (opts.Max or 100),0,1,0)
-            barFill.BackgroundColor3 = Color3.fromRGB(100,100,255)
-            Instance.new("UICorner", barFill).CornerRadius = UDim.new(0,6)
-
-            local dragging = false
-            barBackground.InputBegan:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    dragging = true
-                end
-            end)
-
-            barBackground.InputEnded:Connect(function(input)
-                if input.UserInputType == Enum.UserInputType.MouseButton1 then
-                    dragging = false
-                end
-            end)
-
-            UIS.InputChanged:Connect(function(input)
-                if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-                    local mousePos = input.Position.X
-                    local relativePos = math.clamp(mousePos - barBackground.AbsolutePosition.X, 0, barBackground.AbsoluteSize.X)
-                    local value = math.floor((relativePos / barBackground.AbsoluteSize.X) * (opts.Max or 100))
-                    barFill.Size = UDim2.new(relativePos / barBackground.AbsoluteSize.X, 0, 1, 0)
-                    label.Text = opts.Name.." ["..value.."]"
-                    if opts.Callback then opts.Callback(value) end
-                end
-            end)
-        end
 
         -- NEW: Color Picker
         function cat:AddColorPicker(opts)
@@ -529,7 +486,7 @@ end
             end
         end
     end)
-end
+        end
 
         function cat:AddDropdown(opts)
             local dropdownBtn = Instance.new("TextButton", cat.Frame)
@@ -635,8 +592,8 @@ end
             end
         end
     end)
+
     return UI
 end
 
 return CreateOpticalUI()
--- TEST
