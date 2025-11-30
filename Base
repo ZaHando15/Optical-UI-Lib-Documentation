@@ -1,4 +1,4 @@
--- Optical UI Library (Enhanced + Prettier)
+-- Optical UI Library (Enhanced + Fully Fixed)
 local function CreateOpticalUI()
     ------------------------------------------------------------------------ services
     local TweenService = game:GetService("TweenService")
@@ -48,7 +48,7 @@ local function CreateOpticalUI()
     minimizeBtn.BackgroundColor3 = Color3.fromRGB(55, 59, 65)
     minimizeBtn.Text = "-"
     minimizeBtn.TextSize = 18
-    minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    minimizeBtn.TextColor3 = Color3.white
     minimizeBtn.Font = Enum.Font.GothamBold
     Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
 
@@ -58,7 +58,7 @@ local function CreateOpticalUI()
     closeBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
     closeBtn.Text = "X"
     closeBtn.TextSize = 16
-    closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeBtn.TextColor3 = Color3.white
     closeBtn.Font = Enum.Font.GothamBold
     Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
 
@@ -156,7 +156,7 @@ local function CreateOpticalUI()
 
         -- sidebar button
         cat.Button = Instance.new("TextButton", sidebar)
-        cat.Button.Size = UDim2.new(1, 0, 0, 36)   -- restore explicit size
+        cat.Button.Size = UDim2.new(1, 0, 0, 36)
         cat.Button.BackgroundColor3 = Color3.fromRGB(45, 49, 55)
         cat.Button.Text = name
         cat.Button.TextColor3 = Color3.fromRGB(220, 220, 220)
@@ -195,15 +195,14 @@ local function CreateOpticalUI()
             btn.MouseButton1Click:Connect(function() if opts.Callback then opts.Callback() end end)
         end
 
-        ------------------------------------------------------------------------ CHECKBOX TOGGLE (pill style)
-         function cat:AddToggle(opts)
+        ------------------------------------------------------------------------ PRETTY CHECKBOX TOGGLE (pill)
+        function cat:AddToggle(opts)
             local state = opts.Default or false
             local holder = Instance.new("Frame", cat.Frame)
             holder.Size = UDim2.new(1, 0, 0, 32)
             holder.BackgroundColor3 = Color3.fromRGB(55, 59, 65)
             Instance.new("UICorner", holder).CornerRadius = UDim.new(0, 8)
 
-            -- invisible click-catcher
             local clicker = Instance.new("TextButton", holder)
             clicker.Size = UDim2.new(1, 0, 1, 0)
             clicker.BackgroundTransparency = 1
@@ -364,7 +363,7 @@ local function CreateOpticalUI()
             end)
         end
 
-        ------------------------------------------------------------------------ DROPDOWN
+        ------------------------------------------------------------------------ DROPDOWN (fully fixed)
         function cat:AddDropdown(opts)
             local dropdownBtn = Instance.new("TextButton", cat.Frame)
             dropdownBtn.Size = UDim2.new(1,0,0,30)
@@ -430,7 +429,7 @@ local function CreateOpticalUI()
             updateText()
         end
 
-        ------------------------------------------------------------------------ COLOR PICKER
+        ------------------------------------------------------------------------ COLOR PICKER (fully fixed)
         function cat:AddColorPicker(opts)
             local currentColor = opts.Default or Color3.fromRGB(255,255,255)
             local holder = Instance.new("Frame",cat.Frame)
@@ -467,7 +466,7 @@ local function CreateOpticalUI()
             ---------------------------------------------------------- HSV popup
             local popup = Instance.new("Frame",screenGui)
             popup.Size = UDim2.new(0,200,0,220)
-            popup.BackgroundColor3 = Color3.fromRGB(30, 32, 34)
+            popup.BackgroundColor3 = Color3.fromRGB(25, 27, 29)
             popup.BorderSizePixel = 0
             popup.Visible = false
             popup.ZIndex = 10
