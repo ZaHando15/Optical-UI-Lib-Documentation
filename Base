@@ -48,7 +48,7 @@ local function CreateOpticalUI()
     minimizeBtn.BackgroundColor3 = Color3.fromRGB(55, 59, 65)
     minimizeBtn.Text = "-"
     minimizeBtn.TextSize = 18
-    minimizeBtn.TextColor3 = Color3.white
+    minimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     minimizeBtn.Font = Enum.Font.GothamBold
     Instance.new("UICorner", minimizeBtn).CornerRadius = UDim.new(0, 6)
 
@@ -58,7 +58,7 @@ local function CreateOpticalUI()
     closeBtn.BackgroundColor3 = Color3.fromRGB(220, 60, 60)
     closeBtn.Text = "X"
     closeBtn.TextSize = 16
-    closeBtn.TextColor3 = Color3.white
+    closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
     closeBtn.Font = Enum.Font.GothamBold
     Instance.new("UICorner", closeBtn).CornerRadius = UDim.new(0, 6)
 
@@ -172,11 +172,6 @@ local function CreateOpticalUI()
             cat.Frame.Visible = true
             cat.Button.BackgroundColor3 = Color3.fromRGB(65, 135, 245)
         end)
--- after  local sideLayout = Instance.new("UIListLayout", sidebar)  :
-sideLayout.SortOrder = Enum.SortOrder.LayoutOrder
-sideLayout.Padding = UDim.new(0, 6)
-sideLayout.FillDirection = Enum.FillDirection.Vertical
-sideLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center   -- ADD THIS
 
         ------------------------------------------------------------------------ controls
         function cat:AddLabel(text)
